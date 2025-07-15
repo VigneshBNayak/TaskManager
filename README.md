@@ -59,3 +59,13 @@ project/
 
 ### ✏️ Edit Task Page
 ![Edit Page](screenshots/editpage.png)
+
+## ⚙️ How to Run Locally
+
+```Run this code in cmd
+git clone https://github.com/yourusername/TaskManager.git
+cd todo-advanced
+python -m venv venv
+source venv/bin/activate  # Use venv\Scripts\activate on Windows
+pip install -r requirements.txt
+python app.py
