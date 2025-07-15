@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Register</h2>
+
+<form method="POST">
+    <label for="username">Username</label><br>
+    <input type="text" name="username" placeholder="Username" required><br><br>
+
+    <label for="password">Password</label><br>
+    <div style="position: relative;">
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <i class="fa fa-eye-slash" id="toggleIcon" onclick="togglePassword()" style="position: absolute; right: 10px; top: 18px; cursor: pointer;"></i>
+    </div><br>
+
+    <button type="submit">Register</button>
+</form>
+
+<script>
+function togglePassword() {
+    const pw = document.getElementById("password");
+    const icon = document.getElementById("toggleIcon");
+    if (pw.type === "password") {
+        pw.type = "text";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+    } else {
+        pw.type = "password";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+    }
+}
+</script>
+{% endblock %}

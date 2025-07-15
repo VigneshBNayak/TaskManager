@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+.landing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #1e1e2f, #3e3e55);
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.landing-container h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.landing-container p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin-bottom: 2rem;
+    color: #ddd;
+}
+
+.landing-buttons {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.landing-buttons a button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    background-color: #00b894;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.landing-buttons a button:hover {
+    background-color: #019270;
+    transform: scale(1.05);
+}
+
+.footer-text {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+</style>
+
+<div class="landing-container">
+    <h1>Welcome to TaskMaster</h1>
+    <p>Your all-in-one personal task manager. Stay organized, meet deadlines, and boost productivity effortlessly.</p>
+
+    <div class="landing-buttons">
+        <a href="{{ url_for('login') }}"><button>Login</button></a>
+        <a href="{{ url_for('register') }}"><button>Register</button></a>
+    </div>
+
+    <div class="footer-text">
+        Made with 💙 by Vignesh B Nayak | Efficient. Simple. Elegant.
+    </div>
+</div>
+{% endblock %}

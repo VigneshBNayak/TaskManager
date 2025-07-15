@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Your Tasks</h1>
+
+<form action="/add" method="post">
+    <input type="text" name="task" placeholder="Task description" required>
+    <input type="date" name="deadline" required>
+    <input type="time" name="deadline_time" required>
+    <select name="priority">
+        <option value="Low">Low</option>
+        <option value="Medium" selected>Medium</option>
+        <option value="High">High</option>
+    </select>
+    <button type="submit">Add Task</button>
+</form>
+
+<div class="stats-bar">
+    <div class="stat-box completed">
+        <div class="percentage">{{ stats.completed_pct }}%</div>
+        <div class="label">Completed</div>
+        <small>{{ stats.completed }} of {{ stats.total }}</small>
+    </div>
+    <div class="stat-box failed">
+        <div class="percentage">{{ stats.failed_pct }}%</div>
+        <div class="label">Failed</div>
+        <small>{{ stats.failed }} of {{ stats.total }}</small>
+    </div>
+</div>
+
+<h2>Pending Tasks</h2>
+
+{% for priority, tasks in categorized_pending.items() %}
+    <h3>{{ priority }} Priority</h3>
+    <ul>
+        {% for task in tasks %}
+            <li id="task-{{ task.id }}" class="task-item {{ task.priority }}">
+                <strong>{{ task.content }}</strong><br>
+                Deadline: {{ task.deadline.strftime('%Y-%m-%d %H:%M:%S') }}<br>
+                Priority: <strong>{{ task.priority }}</strong>
+               <div>
+                  ⏳ Time left: <span id="countdown-{{ task.id }}"></span>
+                  <button onclick="markComplete('{{ task.id }}')">✔️ Complete</button>
+                  <button onclick="toggleEditForm('{{ task.id }}')">✏️ Edit</button>
+                  <form id="edit-form-{{ task.id }}" class="edit-form" style="display:none;" method="post" action="/edit/{{ task.id }}">
+                      <input type="text" name="content" value="{{ task.content }}" required>
+                      <input type="date" name="deadline" value="{{ task.deadline.strftime('%Y-%m-%d') }}" required>
+                      <input type="time" name="deadline_time" value="{{ task.deadline.strftime('%H:%M') }}" required>
+                      <select name="priority">
+                          <option value="Low" {% if task.priority == "Low" %}selected{% endif %}>Low</option>
+                          <option value="Medium" {% if task.priority == "Medium" %}selected{% endif %}>Medium</option>
+                          <option value="High" {% if task.priority == "High" %}selected{% endif %}>High</option>
+                      </select>
+                      <button type="submit">💾 Save</button>
+                  </form>
+                  <form method="post" action="/delete/{{ task.id }}" style="display:none;" id="delete-form-{{ task.id }}">
+                      <button type="submit" onclick="return confirm('Delete this task?')">🗑️ Delete</button>
+                  </form>
+              </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+
+<script id="pending-data" type="application/json">
+  {{ pending_serialized | tojson | safe }}
+</script>
+
+<script src="{{ url_for('static', filename='countdown.js') }}"></script>
+<script>
+function toggleEditForm(id) {
+    const form = document.getElementById('edit-form-' + id);
+    const deleteForm = document.getElementById('delete-form-' + id);
+    const isHidden = form.style.display === 'none';
+
+    form.style.display = isHidden ? 'block' : 'none';
+    deleteForm.style.display = isHidden ? 'block' : 'none';
+}
+</script>
+
+
+<h2>Completed Tasks</h2>
+
+{% for priority, tasks in categorized_completed.items() %}
+    <h3>{{ priority }} Priority</h3>
+    <ul>
+        {% for task in tasks %}
+            <li style="color: green;">{{ task.content }} — {{ task.deadline }} — Priority: {{ task.priority }}</li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+
+<h2>Failed Tasks</h2>
+
+{% for priority, tasks in categorized_failed.items() %}
+    <h3>{{ priority }} Priority</h3>
+    <ul>
+        {% for task in tasks %}
+            <li style="color: red;">{{ task.content }} — {{ task.deadline }} — Priority: {{ task.priority }}</li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+<form method="POST" action="{{ url_for('delete_account') }}" onsubmit="return confirm('Are you sure you want to delete your account? All your tasks will be lost forever.')">
+  <button type="submit" style="background-color: red; color: white;">Delete Account</button>
+</form>
+{% endblock %}
